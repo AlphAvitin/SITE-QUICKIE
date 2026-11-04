@@ -93,6 +93,10 @@ form{animation:up .7s .7s ease both}
 .ok h2{animation:pop2 .5s ease both}
 .cf{position:absolute;left:50%;top:40%;font-size:22px;pointer-events:none;animation:cf 1.4s ease-out forwards}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.fx{display:none}}
+select{width:100%;font:inherit;font-size:16px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:14px}
+select:focus{outline:2px solid var(--ac);border-color:transparent}
+select:disabled{opacity:.6}
+option{background:#16121a;color:#f6f3f8}
 </style>
 </head>
 <body class="lock">
@@ -115,16 +119,17 @@ form{animation:up .7s .7s ease both}
 <main class="w">
 <form id="f" novalidate>
 <div class="pg"><i id="bar"></i></div><div class="stl" id="stl">Passo 1 de 4</div>
-<div class="st on" data-s="0"><h3>Seus dados</h3>
+<div class="st on" data-s="0"><h3>Seus dados</h3><p style="margin:-8px 0 16px;color:var(--mu);font-size:14px">Todos os campos são obrigatórios.</p>
 <fieldset><label class="t" for="nome">Como podemos te chamar?</label><input type="text" id="nome" name="nome" autocomplete="nickname" required></fieldset>
 <fieldset><label class="t" for="email">E-mail</label><input type="email" id="email" name="email" autocomplete="email" required></fieldset>
-<fieldset><label class="t" for="zap">WhatsApp <small>(opcional)</small></label><input type="tel" id="zap" name="whatsapp" autocomplete="tel" placeholder="(98) 99999-9999"></fieldset>
-<fieldset><label class="t" for="cid">Cidade e estado <small>(opcional)</small></label><input type="text" id="cid" name="cidade" autocomplete="address-level2"></fieldset>
+<fieldset><label class="t" for="zap">WhatsApp <small>(com DDD)</small></label><input type="tel" id="zap" name="whatsapp" autocomplete="tel" inputmode="tel" maxlength="15" placeholder="(98) 99999-9999"></fieldset>
+<fieldset><label class="t" for="uf">Estado</label><select id="uf" name="estado"><option value="">Selecione o estado</option><option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option><option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option><option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option><option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option><option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option><option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option><option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option><option value="SP">São Paulo</option><option value="SE">Sergipe</option><option value="TO">Tocantins</option></select></fieldset>
+<fieldset><label class="t" for="cid">Cidade</label><select id="cid" name="cidade" disabled><option value="">Escolha o estado primeiro</option></select><input type="text" id="cid2" placeholder="Digite sua cidade" style="display:none;margin-top:8px"></fieldset>
 <fieldset><legend>Qual aparelho você usa?</legend><div class="g">
 <label class="o"><input type="radio" name="aparelho" value="Android" required><span>Android</span></label>
 <label class="o"><input type="radio" name="aparelho" value="iPhone"><span>iPhone</span></label>
 </div></fieldset>
-</div><div class="st" data-s="1"><h3>O que você espera?</h3><fieldset><legend>O que você mais espera do Quickie? <small>(marque quantos quiser)</small></legend><div class="g">
+</div><div class="st" data-s="1"><h3>O que você espera?</h3><fieldset><legend>O que você mais espera do Quickie? <small>(marque pelo menos uma)</small></legend><div class="g">
 <label class="o"><input type="checkbox" name="espera" value="Match"><span>Match (interesse mútuo)</span></label>
 <label class="o"><input type="checkbox" name="espera" value="Chats e voz"><span>Chats e mensagens de voz</span></label>
 <label class="o"><input type="checkbox" name="espera" value="Perfil"><span>Perfil com fotos e preferências</span></label>
@@ -135,7 +140,7 @@ form{animation:up .7s .7s ease both}
 <label class="o"><input type="checkbox" name="espera" value="Sound Pack"><span>Sons exclusivos (Sound Pack)</span></label>
 </div></fieldset>
 <fieldset><label class="t" for="outro">Tem algo mais que você gostaria de ver? <small>(opcional)</small></label><textarea id="outro" name="sugestao"></textarea></fieldset>
-</div><div class="st" data-s="2"><h3>Quickie Pro</h3><fieldset><legend>Quais recursos do Quickie Pro te interessam? <small>(marque quantos quiser)</small></legend><div class="g">
+</div><div class="st" data-s="2"><h3>Quickie Pro</h3><fieldset><legend>Quais recursos do Quickie Pro te interessam? <small>(marque pelo menos uma)</small></legend><div class="g">
 <label class="o"><input type="checkbox" name="pro" value="Super Likes"><span>Super Likes</span></label>
 <label class="o"><input type="checkbox" name="pro" value="Boost"><span>Boost (destaque do perfil)</span></label>
 <label class="o"><input type="checkbox" name="pro" value="Modo invisível"><span>Modo invisível</span></label>
@@ -175,12 +180,19 @@ function val(n){var e=f.elements[n];return e&&e.value?e.value.trim():''}
 function many(n){return Array.prototype.map.call(f.querySelectorAll('input[name="'+n+'"]:checked'),function(x){return x.value}).join(', ')}
 function done(msg){f.style.display='none';if(msg)document.getElementById('okp').textContent=msg;document.getElementById('ok').style.display='block';window.scrollTo(0,0);burst()}
 function burst(){var o=document.getElementById('ok'),e=['❤️','🏳️‍🌈','✨','💗','🔥'];for(var i=0;i<18;i++){var s=document.createElement('span');s.className='cf';s.textContent=e[i%5];s.style.setProperty('--x',(Math.random()*280-140)+'px');s.style.setProperty('--y',(-(Math.random()*160+40))+'px');o.appendChild(s)}}
+var uf=document.getElementById('uf'),cs=document.getElementById('cid'),c2=document.getElementById('cid2');
+uf.onchange=function(){c2.style.display='none';cs.style.display='';cs.disabled=true;if(!uf.value){cs.innerHTML='<option value="">Escolha o estado primeiro</option>';return}
+cs.innerHTML='<option value="">Carregando...</option>';
+fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados/'+uf.value+'/municipios?orderBy=nome').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){cs.innerHTML='<option value="">Selecione a cidade</option>'+a.map(function(m){return '<option>'+m.nome+'</option>'}).join('');cs.disabled=false}).catch(function(){cs.style.display='none';c2.style.display='block'})};
+var zp=document.getElementById('zap');zp.addEventListener('input',function(){var d=zp.value.replace(/\D/g,'').slice(0,11),o=d;if(d.length>10)o='('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7);else if(d.length>6)o='('+d.slice(0,2)+') '+d.slice(2,6)+'-'+d.slice(6);else if(d.length>2)o='('+d.slice(0,2)+') '+d.slice(2);zp.value=o});
 var cur=0,N=4,bar=document.getElementById('bar'),stl=document.getElementById('stl'),nx=document.getElementById('nx'),bk=document.getElementById('bk');
 function show(i){cur=i;Array.prototype.forEach.call(f.querySelectorAll('.st'),function(s){s.classList.toggle('on',+s.getAttribute('data-s')===i)});bar.style.width=((i+1)*25)+'%';stl.textContent='Passo '+(i+1)+' de '+N;bk.style.visibility=i?'visible':'hidden';nx.style.display=i<N-1?'block':'none';btn.style.display=i===N-1?'block':'none';err.style.display='none';window.scrollTo(0,0)}
 function bad(m){err.textContent=m;err.style.display='block';return false}
+function city(){var s=document.getElementById('cid'),t=document.getElementById('cid2');return t.style.display!=='none'?t.value.trim():s.value}
 function chk(i){
-if(i===0){if(!val('nome')||!/^\S+@\S+\.\S+$/.test(val('email')))return bad('Preencha seu nome e um e-mail válido.');if(!f.querySelector('input[name="aparelho"]:checked'))return bad('Escolha seu aparelho.')}
-if(i===2&&!f.querySelector('input[name="preco"]:checked'))return bad('Escolha uma faixa de preço.');
+if(i===0){if(!val('nome'))return bad('Preencha seu nome.');if(!/^\S+@\S+\.\S+$/.test(val('email')))return bad('Preencha um e-mail válido.');var dg=val('whatsapp').replace(/\D/g,'');if(dg.length<10||dg.length>11)return bad('Preencha seu WhatsApp com DDD.');if(!val('estado'))return bad('Escolha seu estado.');if(!city())return bad('Escolha sua cidade.');if(!f.querySelector('input[name="aparelho"]:checked'))return bad('Escolha seu aparelho.')}
+if(i===1&&!f.querySelector('input[name="espera"]:checked'))return bad('Marque pelo menos uma opção.');
+if(i===2){if(!f.querySelector('input[name="pro"]:checked'))return bad('Marque pelo menos um recurso do Pro.');if(!f.querySelector('input[name="preco"]:checked'))return bad('Escolha uma faixa de preço.')}
 if(i===3&&!f.elements.maior18.checked)return bad('Confirme que você tem 18 anos ou mais.');
 return true}
 nx.onclick=function(){if(chk(cur))show(cur+1)};bk.onclick=function(){show(cur-1)};show(0);
@@ -188,7 +200,7 @@ f.addEventListener('submit',function(ev){
 ev.preventDefault();err.style.display='none';
 if(cur<N-1){if(chk(cur))show(cur+1);return}
 if(!chk(3))return;var email=val('email');
-var d={nome:val('nome'),email:email,whatsapp:val('whatsapp'),cidade:val('cidade'),aparelho:f.querySelector('input[name="aparelho"]:checked').value,espera:many('espera'),sugestao:val('sugestao'),recursos_pro:many('pro'),preco:f.querySelector('input[name="preco"]:checked').value,maior_de_18:'sim'};
+var d={nome:val('nome'),email:email,whatsapp:val('whatsapp'),estado:val('estado'),cidade:city(),aparelho:f.querySelector('input[name="aparelho"]:checked').value,espera:many('espera'),sugestao:val('sugestao'),recursos_pro:many('pro'),preco:f.querySelector('input[name="preco"]:checked').value,maior_de_18:'sim'};
 if(ENDPOINT){
 btn.disabled=true;btn.textContent='Enviando...';
 fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(d)}).then(function(r){if(!r.ok)throw 0;done()}).catch(function(){btn.disabled=false;btn.textContent='Entrar na lista de espera';err.textContent='Não foi possível enviar agora. Tente de novo em instantes.';err.style.display='block'});
